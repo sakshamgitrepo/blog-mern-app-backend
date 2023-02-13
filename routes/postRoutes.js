@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const fs = require("fs");
 const Post = require("../models/Post");
 const jwt = require("jsonwebtoken");
 
@@ -22,9 +21,34 @@ router.post("/post", async (req, res) => {
   });
 });
 
-router.put('/post', async (req,res) => {
-  res.json(req.file)
-})
+router.put("/post", async (req, res) => {
+  const { token } = req.cookies;
+  jwt.verify(token, process.env.JWT_SECRET, {}, async (err, info) => {
+    if (err) throw err;
+    const { id, title, summary, content } = req.body;
+    const postDoc = await Post.findById(id);
+    const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+    if (!isAuthor) {
+      return res.status(400).json("you are not the author");
+    }
+  
+    req.file
+      ? await postDoc.update({
+          title,
+          summary,
+          content,
+          cover: req.file.filename,
+        })
+      : await postDoc.update({
+          title,
+          summary,
+          content,
+          cover: postDoc.cover,
+        });
+
+    res.json(postDoc);
+  });
+});
 
 router.get("/post", async (req, res) => {
   res.json(
@@ -32,9 +56,9 @@ router.get("/post", async (req, res) => {
   );
 });
 
-router.get('/post/:id', async (req, res) => {
-  const {id} = req.params;
-  const postDoc = await Post.findById(id).populate('author', ['username']);
+router.get("/post/:id", async (req, res) => {
+  const { id } = req.params;
+  const postDoc = await Post.findById(id).populate("author", ["username"]);
   res.json(postDoc);
-})
+});
 module.exports = router;
