@@ -3,11 +3,12 @@ const router = express.Router()
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const asyncHandler = require("express-async-handler");
 
 
 const salt = bcrypt.genSaltSync(10);
 
-router.post('/register', async (req,res) => {
+router.post('/register', asyncHandler(async (req,res) => {
     const {username,password} = req.body;
     try{
       const userDoc = await User.create({
@@ -17,12 +18,13 @@ router.post('/register', async (req,res) => {
       res.json(userDoc);
     } catch(e) {
       console.log(e);
-      res.status(400).json(e);
+      res.status(400)
+      throw new Error('Invalid user data')
 }
     console.log({username});
-  });
+  }))
 
-  router.post('/login', async (req,res) => {
+  router.post('/login', asyncHandler( async (req,res) => {
     const {username,password} = req.body;
     const userDoc = await User.findOne({username});
 
@@ -37,17 +39,23 @@ router.post('/register', async (req,res) => {
         });
       });
     } else {
-      res.status(400).json('wrong credentials');
+      res.status(400);
+      throw new Error('Invalid credentials')
     }
   
-  });
-  router.get('/profile', (req,res) => {
+  }))
+  router.get('/profile', asyncHandler( (req,res) => {
+    if(req.cookies){
     const {token} = req.cookies;
     jwt.verify(token, process.env.JWT_SECRET, {}, (err,info) => {
-      if (err) throw err;
+      if (err) throw new Error;
       res.json(info);
     });
-  })
+  }else{
+    throw new Error('token not found')
+  }
+  }))
+
 router.post('/logout', (req,res) => {
     res.clearCookie('token')
     res.json('loggedout')

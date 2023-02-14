@@ -35,6 +35,5 @@ app.use(
   require("./routes/postRoutes")
 );
 
-console.log(__dirname);
 
 app.listen(port, () => console.log(`Server started on port ${port}`));
