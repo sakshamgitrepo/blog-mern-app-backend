@@ -53,6 +53,7 @@ router.post('/register', asyncHandler(async (req,res) => {
     });
   }else{
     throw new Error('token not found')
+    res.redirect
   }
   }))
 
