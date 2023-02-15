@@ -45,16 +45,13 @@ router.post('/register', asyncHandler(async (req,res) => {
   
   }))
   router.get('/profile', asyncHandler( (req,res) => {
-    if(req.cookies){
+
     const {token} = req.cookies;
     jwt.verify(token, process.env.JWT_SECRET, {}, (err,info) => {
       if (err) throw new Error;
       res.json(info);
     });
-  }else{
-    throw new Error('token not found')
-    res.redirect
-  }
+  
   }))
 
 router.post('/logout', (req,res) => {
