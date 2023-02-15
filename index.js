@@ -11,7 +11,7 @@ connectDB();
 
 const app = express();
 
-app.use(cors({ credentials: true, origin: "https://mybloggspace.netlify.app",
+app.use(cors({ credentials: true, origin: "*",
  }));
 app.use(express.json());
 app.use(cookieParser());
