@@ -11,7 +11,7 @@ connectDB();
 
 const app = express();
 
-app.use(cors({ credentials: true, origin: 'http://localhost:3000'
+app.use(cors({ credentials: true, origin: 'https://blog-app-mern-wheat.vercel.app'
  }));
 app.use(express.json());
 app.use(cookieParser());
