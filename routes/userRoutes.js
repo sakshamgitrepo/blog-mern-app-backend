@@ -3,6 +3,7 @@ const router = express.Router()
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const checkAuth = require('../middleware/checkAuth')
 const asyncHandler = require("express-async-handler");
 
 
@@ -44,16 +45,9 @@ router.post('/register', asyncHandler(async (req,res) => {
     }
   
   }))
-  router.get('/profile', asyncHandler( (req,res) => {
-  
-
-    const {token} = req.cookies;
-    jwt.verify(token, process.env.JWT_SECRET, {}, (err,info) => {
-      if (err) throw new Error;
-      res.json(info);
-    })
-   
-  }))
+  router.get('/profile', checkAuth, (req,res) => {
+ 
+  })
 
 router.post('/logout', (req,res) => {
     res.clearCookie('token')
