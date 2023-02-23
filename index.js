@@ -6,6 +6,7 @@ const connectDB = require("./config/db");
 const port = process.env.PORT || 4000;
 const cookieParser = require("cookie-parser");
 const multer = require("multer");
+bodyParser = require('body-parser');
 
 connectDB();
 
@@ -13,6 +14,8 @@ const app = express();
 
 app.use(cors({ credentials: true, origin: 'https://blog-app-mern-zeta.vercel.app'
  }));
+ app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static('uploads'));
