@@ -12,7 +12,8 @@ connectDB();
 
 const app = express();
 
-app.use(cors({ credentials: true, origin: 'https://blog-app-mern-zeta.vercel.app'
+app.use(cors({ credentials: true, origin: "https://blog-app-mern-zeta.vercel.app",
+methods: ['GET', 'POST', 'PUT']
  }));
  app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
